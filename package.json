@@ -1,6 +1,6 @@
 {
   "name": "gib-recipe-browserify",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Gib recipe for browserify.",
   "main": "index.js",
   "scripts": {
