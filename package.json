@@ -1,0 +1,13 @@
+{
+  "name": "gib-recipe-browserify",
+  "version": "0.0.0",
+  "description": "Gib recipe for browserify.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "author": "Carl Sutherland <carl@humblesoftware.com>",
+  "license": "ISC",
+  "dependencies": {
+  }
+}
