@@ -8,19 +8,22 @@
 // Modules:
 var babelify   = require('babelify');
 var browserify = require('browserify');
-var buffer     = require('vinyl-buffer');
+var sourcemaps = require('gulp-sourcemaps');
+var uglify     = require('gulp-uglify');
 var gulpUtil   = require('gulp-util');
 var path       = require('path');
-var sourcemaps = require('gulp-sourcemaps');
+var buffer     = require('vinyl-buffer');
 var source     = require('vinyl-source-stream');
-var uglify     = require('gulp-uglify');
 var watchify   = require('watchify');
-var _          = require('lodash');
+
+// Locals:
+var bus        = bus;
 
 // Exports:
 module.exports  = {
-  jsTask: jsTask
-}
+  jsTask: jsTask,
+  register: register
+};
 
 function jsTask (options) {
 
@@ -41,11 +44,13 @@ function jsTask (options) {
 
     var dest     = path.dirname(options.dest);
     var filename = path.basename(options.dest);
+    var bundle   = b.bundle();
+
 
     gulp = gulp || this;
 
-    return b
-      .bundle()
+
+    bundle
       .pipe(source(filename))
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
@@ -54,8 +59,16 @@ function jsTask (options) {
       // browserSync.notify(err.message, 3000); ?
       .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest(dest))
-      // Reload browser:
-      .pipe(options.browserSync.stream());
+
+
+    // Reload browser:
+    if (options.refreshStream) {
+      bundle.pipe(options.refreshStream());
+    } else if (bus && bus.refreshStream) {
+      bundle.pipe(bus.refreshStream());
+    }
+
+    return bundle;
   };
   return bundle;
 }
@@ -67,7 +80,7 @@ function config (options) {
   options.reload     = options.reload     || function () {};
   options.dest       = options.dest       || './build/app.js';
   options.src        = options.src        || './src/index.js';
-  options.browserify = _.assign(options.browserify || {
+  options.browserify = Object.assign(options.browserify || {
     debug: true,
     entries: [
       options.src
@@ -75,4 +88,8 @@ function config (options) {
   }, watchify.args);
 
   return options;
+}
+
+function register (b) {
+  bus = b;
 }
