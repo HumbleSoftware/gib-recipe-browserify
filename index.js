@@ -51,7 +51,7 @@ function jsTask (options) {
     gulp = gulp || this;
 
 
-    bundle
+    bundle = bundle
       .pipe(source(filename))
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
@@ -59,14 +59,14 @@ function jsTask (options) {
       .on('error', gulpUtil.log)
       // browserSync.notify(err.message, 3000); ?
       .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest(dest))
+      .pipe(gulp.dest(dest));
 
 
     // Reload browser:
     if (options.refreshStream) {
-      bundle.pipe(options.refreshStream());
+      bundle = bundle.pipe(options.refreshStream());
     } else if (bus && bus.refreshStream) {
-      bundle.pipe(bus.refreshStream());
+      bundle = bundle.pipe(bus.refreshStream());
     }
 
     return bundle;
