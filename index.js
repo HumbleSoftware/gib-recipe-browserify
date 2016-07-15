@@ -21,6 +21,7 @@ var bus        = bus;
 
 // Exports:
 module.exports  = {
+  browserifyTask: jsTask,
   jsTask: jsTask,
   register: register
 };
