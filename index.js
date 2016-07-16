@@ -35,7 +35,11 @@ function jsTask (options) {
 
   // Browserify setup:
   b.transform(babelify, { presets: ['es2015'] });
-  b.on('log', gulpUtil.log);
+
+  // Wire up logging:
+  if (bus) {
+    b.on('log', bus.log);
+  }
 
   // Watching:
   b.on('update', bundle);
@@ -47,13 +51,14 @@ function jsTask (options) {
     var filename = path.basename(options.dest);
     var bundle   = b.bundle();
 
-
     gulp = gulp || this;
 
+    // Wire up errors:
+    if (bus) {
+      bundle.on('error', bus.error);
+    }
 
-    if (bus && bus.error) bundle.on('error', bus.error);
-
-
+    // Bundle source:
     bundle = bundle
       .pipe(source(filename))
       .pipe(buffer())
