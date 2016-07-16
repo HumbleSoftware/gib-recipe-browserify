@@ -17,7 +17,7 @@ var source     = require('vinyl-source-stream');
 var watchify   = require('watchify');
 
 // Locals:
-var bus        = bus;
+var bus = null;
 
 // Exports:
 module.exports  = {
@@ -51,13 +51,14 @@ function jsTask (options) {
     gulp = gulp || this;
 
 
+    if (bus && bus.error) bundle.on('error', bus.error);
+
+
     bundle = bundle
       .pipe(source(filename))
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
       .pipe(uglify())
-      .on('error', gulpUtil.log)
-      // browserSync.notify(err.message, 3000); ?
       .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest(dest));
 
