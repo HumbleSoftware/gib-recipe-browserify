@@ -2,6 +2,7 @@
  * Browserify recipe.
  *
  * TODO multiple entries/exits?
+ * TODO remove default es2015 transform
  */
 'use strict';
 
