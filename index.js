@@ -54,9 +54,16 @@ function jsTask (options) {
     gulp = gulp || this;
 
     // Wire up errors:
-    if (bus) {
-      bundle.on('error', bus.error);
+    function error (e) {
+      var error = e.message;
+      if (bus) {
+        bus.error.call(this, (options.gibTaskName || pkg.name), error);
+      } else {
+        console.log(error);
+        this.emit('end');
+      }
     }
+    bundle.on('error', error);
 
     // Bundle source:
     bundle = bundle
