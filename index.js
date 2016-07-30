@@ -33,9 +33,6 @@ function jsTask (options) {
   var b = watchify(browserify(options.browserify));
   var gulp = null;
 
-  // Browserify setup:
-  b.transform(babelify, { presets: ['es2015'] });
-
   // Wire up logging:
   if (bus) {
     b.on('log', bus.log);
@@ -95,6 +92,7 @@ function config (options) {
   options.dest       = options.dest       || './build/app.js';
   options.src        = options.src        || './src/index.js';
   options.browserify = Object.assign(options.browserify || {
+    transform: [babelify.configure({ presets: ['es2015'] })],
     debug: true,
     entries: [
       options.src
