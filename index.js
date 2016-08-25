@@ -67,11 +67,18 @@ function jsTask (options) {
     bundle = bundle
       .pipe(source(filename))
       .pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true}))
-      .pipe(uglify())
+      .pipe(sourcemaps.init({loadMaps: true}));
+
+    // Uglify:
+    // Maybe this condition should be injected?
+    if (process.env.NODE_ENV === 'production') {
+      bundle = bundle.pipe(uglify());
+    }
+
+    // Destination:
+    bundle
       .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest(dest));
-
 
     // Reload browser:
     if (options.refreshStream) {
