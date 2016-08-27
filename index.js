@@ -31,7 +31,7 @@ function jsTask (options) {
 
   options = config(options);
 
-  var b = watchify(browserify(options.browserify));
+  var b = watchify(browserify(options.src, options.browserify));
   var gulp = null;
 
   // Wire up logging:
@@ -41,6 +41,10 @@ function jsTask (options) {
 
   // Watching:
   b.on('update', bundle);
+
+  if (options.require) {
+    b.require(options.require)
+  }
 
   // Task:
   function bundle () {
@@ -99,13 +103,10 @@ function config (options) {
   options.reload     = options.reload     || function () {};
   options.dest       = options.dest       || './build/app.js';
   options.src        = options.src        || './src/index.js';
-  options.browserify = Object.assign(options.browserify || {
+  options.browserify = Object.assign({
     transform: [babelify.configure({ presets: ['es2015'] })],
-    debug: true,
-    entries: [
-      options.src
-    ]
-  }, watchify.args);
+    debug: true
+  }, watchify.args, options.browserify || {});
 
   return options;
 }
