@@ -76,7 +76,7 @@ function jsTask (options) {
     }
 
     // Destination:
-    bundle
+    bundle = bundle
       .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest(dest));
 
