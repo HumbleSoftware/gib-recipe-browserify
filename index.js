@@ -31,17 +31,21 @@ function jsTask (options) {
 
   options = config(options);
 
-  var b = watchify(browserify(options.src, options.browserify));
+  var b = browserify(options.src, options.browserify);
   var gulp = null;
+
+  // Watching:
+  if (process.env.NODE_ENV !== 'production') {
+    b = watchify(b);
+  }
+  b.on('update', bundle);
 
   // Wire up logging:
   if (bus) {
     b.on('log', bus.log);
   }
 
-  // Watching:
-  b.on('update', bundle);
-
+  // Wire up require:
   if (options.require) {
     b.require(options.require)
   }
